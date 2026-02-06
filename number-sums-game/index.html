@@ -11,73 +11,249 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f5f5f5;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       touch-action: manipulation;
     }
-    .container {
+    .app {
+      min-height: 100vh;
+      max-width: 500px;
+      margin: 0 auto;
+      background: #fff;
+      position: relative;
+    }
+    
+    /* ===== ホーム画面 ===== */
+    .home-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      background: linear-gradient(180deg, #f8f9ff 0%, #fff 100%);
+    }
+    .home-logo {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+    .home-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .home-subtitle {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 40px;
+    }
+    .home-btn {
+      width: 100%;
+      max-width: 280px;
+      padding: 16px 24px;
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 12px;
+    }
+    .home-btn:active { transform: scale(0.98); }
+    .home-btn.primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    .home-btn.secondary {
+      background: #f5f5f5;
+      color: #333;
+    }
+    .home-stats {
+      margin-top: 40px;
+      display: flex;
+      gap: 24px;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #5c6bc0;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #888;
+    }
+    .lives-display {
+      margin-top: 32px;
+      text-align: center;
+    }
+    .lives-hearts {
+      font-size: 32px;
+      letter-spacing: 4px;
+    }
+    .lives-timer {
+      font-size: 13px;
+      color: #888;
+      margin-top: 8px;
+    }
+    .lives-full {
+      font-size: 13px;
+      color: #4caf50;
+      margin-top: 8px;
+    }
+    
+    /* ===== 問題選択画面 ===== */
+    .select-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #f8f9ff;
+    }
+    .select-header {
+      padding: 16px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: none;
+      background: #f0f0f0;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .select-title {
+      font-size: 18px;
+      font-weight: 700;
+      flex: 1;
+    }
+    .diff-tabs {
+      display: flex;
+      padding: 12px 16px;
+      gap: 8px;
+      background: #fff;
+    }
+    .diff-tab {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: 2px solid #eee;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .diff-tab.active {
+      border-color: #5c6bc0;
+      background: #f0f0ff;
+      color: #5c6bc0;
+    }
+    .diff-tab .count {
+      font-size: 11px;
+      color: #888;
+      margin-top: 2px;
+    }
+    .diff-tab.active .count {
+      color: #5c6bc0;
+    }
+    .problem-grid {
+      flex: 1;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      overflow-y: auto;
+      align-content: start;
+    }
+    .problem-btn {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      border: 2px solid #e0e0e0;
+      background: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      color: #333;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .problem-btn:active { transform: scale(0.95); }
+    .problem-btn.cleared {
+      background: #e8f5e9;
+      border-color: #4caf50;
+      color: #4caf50;
+    }
+    .problem-btn.cleared .stars {
+      font-size: 8px;
+      margin-top: 2px;
+    }
+    .problem-btn.current {
+      border-color: #5c6bc0;
+      background: #f0f0ff;
+    }
+    .problem-btn.locked {
+      background: #f5f5f5;
+      color: #ccc;
+      cursor: not-allowed;
+    }
+    
+    /* ===== ゲーム画面 ===== */
+    .game-screen {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       background: #fff;
-      max-width: 600px;
-      margin: 0 auto;
     }
-    .header {
+    .game-header {
       padding: 12px 16px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       border-bottom: 1px solid #eee;
     }
-    .title {
-      font-size: 20px;
+    .game-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .problem-number {
+      font-size: 16px;
       font-weight: 700;
       color: #333;
     }
-    .difficulty-btns {
-      display: flex;
-      gap: 6px;
+    .game-timer {
+      font-size: 14px;
+      color: #888;
+      font-variant-numeric: tabular-nums;
     }
-    .diff-btn {
-      padding: 6px 12px;
-      border-radius: 16px;
-      font-size: 12px;
-      font-weight: 500;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
+    .game-lives {
+      font-size: 20px;
     }
-    .diff-btn.active {
-      background: #5c6bc0;
-      color: white;
-    }
-    .diff-btn:not(.active) {
-      background: #f0f0f0;
-      color: #666;
-    }
-    .lives-container {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px;
-    }
-    .heart {
-      font-size: 28px;
-      transition: all 0.3s;
-    }
-    .heart.lost {
-      opacity: 0.2;
-      transform: scale(0.8);
-    }
-    .main {
+    .game-main {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 12px 8px;
-      gap: 16px;
+      gap: 12px;
     }
+    
+    /* ボード関連（既存スタイル） */
     .board-container {
       display: flex;
       flex-direction: column;
@@ -89,11 +265,11 @@
     }
     .sum-box {
       width: 44px;
-      height: 36px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: #333;
       position: relative;
@@ -102,7 +278,7 @@
     .sum-box.over { color: #e53935; }
     .sum-box .current {
       position: absolute;
-      top: 0;
+      top: -2px;
       right: 1px;
       font-size: 9px;
       font-weight: 600;
@@ -123,7 +299,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: #333;
       position: relative;
@@ -164,15 +340,19 @@
     .cell:active { opacity: 0.7; }
     .cell .cage-hint {
       position: absolute;
-      top: 2px;
-      left: 3px;
-      font-size: 10px;
-      font-weight: 600;
-      color: #555;
+      top: 1px;
+      left: 2px;
+      font-size: 9px;
+      font-weight: 700;
+      color: #333;
+      background: rgba(255,255,255,0.85);
+      padding: 0 3px;
+      border-radius: 3px;
+      line-height: 1.2;
+      z-index: 10;
     }
-    .cell .cage-hint.complete { color: #4caf50; text-decoration: line-through; }
-    .cell .cage-hint.over { color: #e53935; }
-    
+    .cell .cage-hint.complete { color: #4caf50; text-decoration: line-through; background: rgba(255,255,255,0.9); }
+    .cell .cage-hint.over { color: #e53935; background: rgba(255,255,255,0.9); }
     .cell.selected .number {
       display: flex;
       align-items: center;
@@ -181,21 +361,11 @@
       height: 34px;
       border: 2.5px solid #333;
       border-radius: 50%;
+      background: rgba(255,255,255,0.5);
     }
-    
-    .cell.erased .number {
-      visibility: hidden;
-    }
-    
-    /* エリアが確定したときのみ白抜き */
-    .cell.cage-resolved {
-      background-color: #fff !important;
-    }
-    
-    .cell.wrong {
-      animation: shake 0.4s;
-    }
-    
+    .cell.erased .number { visibility: hidden; }
+    .cell.cage-resolved { background-color: #fff !important; }
+    .cell.wrong { animation: shake 0.4s; }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-4px); }
@@ -203,12 +373,9 @@
     }
     
     .controls {
-      background: #fff;
-      border-radius: 16px;
-      padding: 14px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
       width: 100%;
       max-width: 340px;
+      padding: 12px;
     }
     .mode-switch {
       display: flex;
@@ -222,7 +389,7 @@
       flex-direction: column;
       align-items: center;
       gap: 4px;
-      padding: 12px 24px;
+      padding: 10px 20px;
       border-radius: 12px;
       border: 2px solid #eee;
       background: #fff;
@@ -233,48 +400,37 @@
       border-color: #5c6bc0;
       background: #f0f0ff;
     }
-    .mode-btn .icon {
-      font-size: 20px;
+    .mode-btn .icon { font-size: 18px; }
+    .mode-btn .label { font-size: 11px; font-weight: 600; color: #666; }
+    .mode-btn.active .label { color: #5c6bc0; }
+    .game-actions {
+      display: flex;
+      gap: 8px;
     }
-    .mode-btn .label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #666;
-    }
-    .mode-btn.active .label {
-      color: #5c6bc0;
-    }
-    .new-game-btn {
-      width: 100%;
+    .action-btn {
+      flex: 1;
       padding: 12px;
-      background: #f5f5f5;
-      color: #333;
-      border: none;
       border-radius: 12px;
+      border: none;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .new-game-btn:active { background: #eee; }
-    
-    .rules {
-      background: #fafafa;
-      border-radius: 12px;
-      padding: 12px;
-      max-width: 340px;
-      font-size: 11px;
-      color: #666;
-      line-height: 1.5;
+    .action-btn.hint {
+      background: #fff3e0;
+      color: #f57c00;
     }
-    .rules h3 { color: #333; font-size: 12px; margin-bottom: 6px; }
-    .rules ul { padding-left: 16px; }
-    .rules li { margin-bottom: 3px; }
+    .action-btn.reset {
+      background: #f5f5f5;
+      color: #666;
+    }
     
+    /* ===== 結果画面（モーダル） ===== */
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.6);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -288,21 +444,46 @@
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.3);
       animation: bounceIn 0.5s;
-      max-width: 300px;
+      max-width: 320px;
+      width: 90%;
     }
     .modal-emoji { font-size: 56px; margin-bottom: 12px; }
     .modal-title { font-size: 24px; font-weight: 700; color: #333; margin-bottom: 8px; }
     .modal-title.gameover { color: #e53935; }
-    .modal-text { color: #666; margin-bottom: 20px; font-size: 14px; }
+    .modal-stars { font-size: 32px; margin-bottom: 8px; }
+    .modal-stats {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+    .modal-stat {
+      text-align: center;
+    }
+    .modal-stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #5c6bc0;
+    }
+    .modal-stat-label {
+      font-size: 11px;
+      color: #888;
+    }
     .modal-btn {
-      padding: 12px 32px;
-      background: #5c6bc0;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
       border-radius: 12px;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
+      margin-bottom: 8px;
+    }
+    .modal-btn.secondary {
+      background: #f5f5f5;
+      color: #333;
     }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes bounceIn {
@@ -312,36 +493,107 @@
       100% { transform: scale(1); opacity: 1; }
     }
     
+    /* ローディング */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      gap: 16px;
+    }
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f0f0f0;
+      border-top-color: #5c6bc0;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { color: #666; font-size: 14px; }
+    
     @media (max-width: 380px) {
       .cell { width: 38px; height: 38px; font-size: 17px; }
       .cell.selected .number { width: 28px; height: 28px; }
-      .sum-box { width: 38px; height: 32px; font-size: 14px; }
-      .row-sum-box { width: 36px; height: 38px; font-size: 14px; }
+      .sum-box { width: 38px; height: 28px; font-size: 13px; }
+      .row-sum-box { width: 36px; height: 38px; font-size: 13px; }
       .col-sums { margin-left: 38px; }
-      .cell .cage-hint { font-size: 9px; }
+      .cell .cage-hint { font-size: 8px; }
     }
   </style>
 </head>
 <body>
   <div id="root"></div>
   <script type="text/babel">
-    const { useState, useEffect, useCallback, useMemo } = React;
+    const { useState, useEffect, useCallback, useMemo, useRef } = React;
 
+    // ========== 定数 ==========
     const PASTEL_COLORS = [
       '#FFCDD2', '#B3E5FC', '#C8E6C9', '#FFE0B2', '#E1BEE7', '#FFF9C4',
       '#B2EBF2', '#F8BBD0', '#DCEDC8', '#D7CCC8', '#CFD8DC', '#F0F4C3',
     ];
 
     const DIFFICULTIES = {
-      easy: { size: 7, selectRatio: 0.5, label: '簡単' },
-      medium: { size: 8, selectRatio: 0.45, label: '普通' },
-      hard: { size: 9, selectRatio: 0.4, label: '難しい' },
+      easy: { size: 7, selectRatio: 0.5, label: '簡単', problems: 500 },
+      medium: { size: 8, selectRatio: 0.45, label: '普通', problems: 1000 },
+      hard: { size: 9, selectRatio: 0.4, label: '難しい', problems: 1000 },
     };
 
-    const MAX_LIVES = 2;
+    const MAX_LIVES = 5;
+    const LIFE_RECOVERY_MINUTES = 30;
     const MIN_CAGE_SIZE = 6;
+    const GAME_LIVES = 2; // ゲーム内ミス許容回数
 
-    function generateCages(size) {
+    // ========== シード付き乱数生成 ==========
+    function mulberry32(seed) {
+      return function() {
+        let t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+
+    // ========== LocalStorage ==========
+    function loadProgress() {
+      try {
+        const data = localStorage.getItem('numberSumsProgress');
+        return data ? JSON.parse(data) : { easy: {}, medium: {}, hard: {} };
+      } catch { return { easy: {}, medium: {}, hard: {} }; }
+    }
+
+    function saveProgress(progress) {
+      try {
+        localStorage.setItem('numberSumsProgress', JSON.stringify(progress));
+      } catch {}
+    }
+
+    function loadLives() {
+      try {
+        const data = localStorage.getItem('numberSumsLives');
+        if (data) {
+          const parsed = JSON.parse(data);
+          // 時間経過による回復計算
+          const now = Date.now();
+          const elapsed = now - parsed.lastUpdate;
+          const recovered = Math.floor(elapsed / (LIFE_RECOVERY_MINUTES * 60 * 1000));
+          const newLives = Math.min(MAX_LIVES, parsed.current + recovered);
+          const newLastUpdate = parsed.lastUpdate + recovered * LIFE_RECOVERY_MINUTES * 60 * 1000;
+          return { current: newLives, lastUpdate: newLives >= MAX_LIVES ? now : newLastUpdate };
+        }
+      } catch {}
+      return { current: MAX_LIVES, lastUpdate: Date.now() };
+    }
+
+    function saveLives(lives) {
+      try {
+        localStorage.setItem('numberSumsLives', JSON.stringify(lives));
+      } catch {}
+    }
+
+    // ========== ケージ生成（シード付き） ==========
+    function generateCagesSeeded(size, random) {
       const totalCells = size * size;
       const cageCount = size;
       const baseCageSize = Math.floor(totalCells / cageCount);
@@ -352,7 +604,7 @@
       
       while (attempts < maxAttempts) {
         attempts++;
-        cages = tryGenerateCages(size, cageCount, baseCageSize);
+        cages = tryGenerateCagesSeeded(size, cageCount, baseCageSize, random);
         if (cages && cages.every(cage => cage.length >= MIN_CAGE_SIZE)) {
           break;
         }
@@ -365,7 +617,7 @@
       return cages;
     }
     
-    function tryGenerateCages(size, cageCount, baseCageSize) {
+    function tryGenerateCagesSeeded(size, cageCount, baseCageSize, random) {
       const cells = [];
       for (let r = 0; r < size; r++) {
         for (let c = 0; c < size; c++) {
@@ -380,12 +632,12 @@
         const unassigned = cells.filter(cell => !assigned.has(`${cell.r},${cell.c}`));
         if (unassigned.length === 0) break;
         
-        const start = unassigned[Math.floor(Math.random() * unassigned.length)];
+        const start = unassigned[Math.floor(random() * unassigned.length)];
         const cage = [start];
         assigned.add(`${start.r},${start.c}`);
         
         const isLastCage = i === cageCount - 1;
-        const targetSize = isLastCage ? unassigned.length : Math.max(MIN_CAGE_SIZE, baseCageSize + Math.floor(Math.random() * 3) - 1);
+        const targetSize = isLastCage ? unassigned.length : Math.max(MIN_CAGE_SIZE, baseCageSize + Math.floor(random() * 3) - 1);
         
         while (cage.length < targetSize) {
           const neighbors = [];
@@ -399,7 +651,7 @@
             }
           }
           if (neighbors.length === 0) break;
-          const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+          const next = neighbors[Math.floor(random() * neighbors.length)];
           cage.push(next);
           assigned.add(`${next.r},${next.c}`);
         }
@@ -434,9 +686,7 @@
     
     function mergeSmallerCages(cages, size) {
       if (!cages) return [];
-      
       let merged = [...cages.map(cage => [...cage])];
-      
       let changed = true;
       while (changed) {
         changed = false;
@@ -444,10 +694,8 @@
           if (merged[i].length < MIN_CAGE_SIZE) {
             let bestNeighbor = -1;
             let bestScore = Infinity;
-            
             for (let j = 0; j < merged.length; j++) {
               if (i === j) continue;
-              
               let isAdjacent = false;
               for (const cellA of merged[i]) {
                 for (const cellB of merged[j]) {
@@ -460,7 +708,6 @@
                 }
                 if (isAdjacent) break;
               }
-              
               if (isAdjacent) {
                 const newSize = merged[i].length + merged[j].length;
                 if (newSize < bestScore) {
@@ -469,7 +716,6 @@
                 }
               }
             }
-            
             if (bestNeighbor !== -1) {
               merged[bestNeighbor] = [...merged[bestNeighbor], ...merged[i]];
               merged.splice(i, 1);
@@ -479,124 +725,294 @@
           }
         }
       }
-      
       return merged;
     }
 
-    function generatePuzzle(size, selectRatio) {
-      const numbers = [];
+    // ========== 解の一意性チェック ==========
+    function countSolutions(numbers, rowSums, colSums, cageSums, cellToCage, size, maxCount = 2) {
+      const totalCells = size * size;
+      let solutionCount = 0;
+      const currentRowSums = new Array(size).fill(0);
+      const currentColSums = new Array(size).fill(0);
+      const currentCageSums = new Array(cageSums.length).fill(0);
+      const rowRemaining = new Array(size).fill(size);
+      const colRemaining = new Array(size).fill(size);
+      const cageRemaining = {};
+      for (let i = 0; i < cageSums.length; i++) cageRemaining[i] = 0;
       for (let r = 0; r < size; r++) {
-        const row = [];
         for (let c = 0; c < size; c++) {
-          row.push(Math.floor(Math.random() * 9) + 1);
-        }
-        numbers.push(row);
-      }
-      
-      const solution = [];
-      for (let r = 0; r < size; r++) {
-        const row = [];
-        for (let c = 0; c < size; c++) {
-          row.push(Math.random() < selectRatio);
-        }
-        solution.push(row);
-      }
-      
-      for (let r = 0; r < size; r++) {
-        if (!solution[r].some(v => v)) {
-          solution[r][Math.floor(Math.random() * size)] = true;
-        }
-      }
-      for (let c = 0; c < size; c++) {
-        let hasSelection = false;
-        for (let r = 0; r < size; r++) {
-          if (solution[r][c]) hasSelection = true;
-        }
-        if (!hasSelection) {
-          solution[Math.floor(Math.random() * size)][c] = true;
+          cageRemaining[cellToCage[`${r},${c}`]]++;
         }
       }
       
-      const cages = generateCages(size);
-      const cagesWithColor = cages.map((cage, index) => ({
-        cells: cage,
-        color: PASTEL_COLORS[index % PASTEL_COLORS.length],
-        id: index,
-      }));
-      
-      const cellToCage = {};
-      cagesWithColor.forEach((cage, cageIndex) => {
-        cage.cells.forEach(cell => {
-          cellToCage[`${cell.r},${cell.c}`] = cageIndex;
-        });
-      });
-      
-      cagesWithColor.forEach(cage => {
-        const hasSelection = cage.cells.some(cell => solution[cell.r][cell.c]);
-        if (!hasSelection && cage.cells.length > 0) {
-          const randomCell = cage.cells[Math.floor(Math.random() * cage.cells.length)];
-          solution[randomCell.r][randomCell.c] = true;
+      function backtrack(cellIndex) {
+        if (solutionCount >= maxCount) return;
+        if (cellIndex === totalCells) {
+          let valid = true;
+          for (let r = 0; r < size && valid; r++) if (currentRowSums[r] !== rowSums[r]) valid = false;
+          for (let c = 0; c < size && valid; c++) if (currentColSums[c] !== colSums[c]) valid = false;
+          for (let i = 0; i < cageSums.length && valid; i++) if (currentCageSums[i] !== cageSums[i]) valid = false;
+          if (valid) solutionCount++;
+          return;
         }
-      });
-      
-      const rowSums = [];
-      for (let r = 0; r < size; r++) {
-        let sum = 0;
-        for (let c = 0; c < size; c++) {
-          if (solution[r][c]) sum += numbers[r][c];
+        
+        const r = Math.floor(cellIndex / size);
+        const c = cellIndex % size;
+        const value = numbers[r][c];
+        const cageIdx = cellToCage[`${r},${c}`];
+        const newRowRemaining = rowRemaining[r] - 1;
+        const newColRemaining = colRemaining[c] - 1;
+        const newCageRemaining = cageRemaining[cageIdx] - 1;
+        
+        // 選択する場合
+        const newRowSum = currentRowSums[r] + value;
+        const newColSum = currentColSums[c] + value;
+        const newCageSum = currentCageSums[cageIdx] + value;
+        if (newRowSum <= rowSums[r] && newColSum <= colSums[c] && newCageSum <= cageSums[cageIdx]) {
+          let canSelect = true;
+          if (newRowRemaining === 0 && newRowSum !== rowSums[r]) canSelect = false;
+          if (canSelect && newColRemaining === 0 && newColSum !== colSums[c]) canSelect = false;
+          if (canSelect && newCageRemaining === 0 && newCageSum !== cageSums[cageIdx]) canSelect = false;
+          if (canSelect) {
+            currentRowSums[r] = newRowSum;
+            currentColSums[c] = newColSum;
+            currentCageSums[cageIdx] = newCageSum;
+            rowRemaining[r] = newRowRemaining;
+            colRemaining[c] = newColRemaining;
+            cageRemaining[cageIdx] = newCageRemaining;
+            backtrack(cellIndex + 1);
+            currentRowSums[r] -= value;
+            currentColSums[c] -= value;
+            currentCageSums[cageIdx] -= value;
+            rowRemaining[r] = newRowRemaining + 1;
+            colRemaining[c] = newColRemaining + 1;
+            cageRemaining[cageIdx] = newCageRemaining + 1;
+          }
         }
-        rowSums.push(sum);
+        
+        // 選択しない場合
+        let canSkip = true;
+        if (newRowRemaining === 0 && currentRowSums[r] !== rowSums[r]) canSkip = false;
+        if (canSkip && newColRemaining === 0 && currentColSums[c] !== colSums[c]) canSkip = false;
+        if (canSkip && newCageRemaining === 0 && currentCageSums[cageIdx] !== cageSums[cageIdx]) canSkip = false;
+        if (canSkip) {
+          rowRemaining[r] = newRowRemaining;
+          colRemaining[c] = newColRemaining;
+          cageRemaining[cageIdx] = newCageRemaining;
+          backtrack(cellIndex + 1);
+          rowRemaining[r] = newRowRemaining + 1;
+          colRemaining[c] = newColRemaining + 1;
+          cageRemaining[cageIdx] = newCageRemaining + 1;
+        }
       }
       
-      const colSums = [];
-      for (let c = 0; c < size; c++) {
-        let sum = 0;
-        for (let r = 0; r < size; r++) {
-          if (solution[r][c]) sum += numbers[r][c];
-        }
-        colSums.push(sum);
-      }
-      
-      const cageSums = cagesWithColor.map(cage => 
-        cage.cells.reduce((sum, cell) => 
-          solution[cell.r][cell.c] ? sum + numbers[cell.r][cell.c] : sum, 0)
-      );
-      
-      return { 
-        size, 
-        numbers, 
-        solution, 
-        cages: cagesWithColor, 
-        cellToCage, 
-        rowSums, 
-        colSums, 
-        cageSums
-      };
+      backtrack(0);
+      return solutionCount;
     }
 
-    function NumberSums() {
+    // ========== パズル生成（シード値で固定） ==========
+    function generatePuzzleWithSeed(difficulty, problemNumber) {
+      const config = DIFFICULTIES[difficulty];
+      const { size, selectRatio } = config;
+      const baseSeed = (difficulty === 'easy' ? 0 : difficulty === 'medium' ? 100000 : 200000) + problemNumber;
+      
+      // 複数のシードを試す（一意解が見つかるまで）
+      for (let seedOffset = 0; seedOffset < 1000; seedOffset++) {
+        const seed = baseSeed * 1000 + seedOffset;
+        const random = mulberry32(seed);
+        
+        // 数字を生成
+        const numbers = [];
+        for (let r = 0; r < size; r++) {
+          const row = [];
+          for (let c = 0; c < size; c++) {
+            row.push(Math.floor(random() * 9) + 1);
+          }
+          numbers.push(row);
+        }
+        
+        // 解答パターンを生成
+        const solution = [];
+        for (let r = 0; r < size; r++) {
+          const row = [];
+          for (let c = 0; c < size; c++) {
+            row.push(random() < selectRatio);
+          }
+          solution.push(row);
+        }
+        
+        for (let r = 0; r < size; r++) {
+          if (!solution[r].some(v => v)) {
+            solution[r][Math.floor(random() * size)] = true;
+          }
+        }
+        for (let c = 0; c < size; c++) {
+          let has = false;
+          for (let r = 0; r < size; r++) if (solution[r][c]) has = true;
+          if (!has) solution[Math.floor(random() * size)][c] = true;
+        }
+        
+        // ケージを生成
+        const cages = generateCagesSeeded(size, random);
+        const cagesWithColor = cages.map((cage, index) => ({
+          cells: cage,
+          color: PASTEL_COLORS[index % PASTEL_COLORS.length],
+          id: index,
+        }));
+        
+        const cellToCage = {};
+        cagesWithColor.forEach((cage, cageIndex) => {
+          cage.cells.forEach(cell => {
+            cellToCage[`${cell.r},${cell.c}`] = cageIndex;
+          });
+        });
+        
+        cagesWithColor.forEach(cage => {
+          const hasSelection = cage.cells.some(cell => solution[cell.r][cell.c]);
+          if (!hasSelection && cage.cells.length > 0) {
+            const randomCell = cage.cells[Math.floor(random() * cage.cells.length)];
+            solution[randomCell.r][randomCell.c] = true;
+          }
+        });
+        
+        // 合計を計算
+        const rowSums = [];
+        for (let r = 0; r < size; r++) {
+          let sum = 0;
+          for (let c = 0; c < size; c++) if (solution[r][c]) sum += numbers[r][c];
+          rowSums.push(sum);
+        }
+        
+        const colSums = [];
+        for (let c = 0; c < size; c++) {
+          let sum = 0;
+          for (let r = 0; r < size; r++) if (solution[r][c]) sum += numbers[r][c];
+          colSums.push(sum);
+        }
+        
+        const cageSums = cagesWithColor.map(cage => 
+          cage.cells.reduce((sum, cell) => solution[cell.r][cell.c] ? sum + numbers[cell.r][cell.c] : sum, 0)
+        );
+        
+        // 解の一意性をチェック
+        const solutionCount = countSolutions(numbers, rowSums, colSums, cageSums, cellToCage, size, 2);
+        
+        if (solutionCount === 1) {
+          return { size, numbers, solution, cages: cagesWithColor, cellToCage, rowSums, colSums, cageSums };
+        }
+      }
+      
+      // フォールバック（ほぼ起こらない）
+      console.warn('Fallback puzzle generation');
+      return null;
+    }
+
+    // ========== メインアプリ ==========
+    function App() {
+      const [screen, setScreen] = useState('home');
       const [difficulty, setDifficulty] = useState('easy');
+      const [problemNumber, setProblemNumber] = useState(1);
+      const [progress, setProgress] = useState(loadProgress);
+      const [lives, setLives] = useState(loadLives);
       const [puzzle, setPuzzle] = useState(null);
       const [cellStates, setCellStates] = useState({});
       const [mode, setMode] = useState('select');
-      const [showCelebration, setShowCelebration] = useState(false);
-      const [showGameOver, setShowGameOver] = useState(false);
-      const [lives, setLives] = useState(MAX_LIVES);
+      const [gameLives, setGameLives] = useState(GAME_LIVES);
       const [wrongCell, setWrongCell] = useState(null);
+      const [showResult, setShowResult] = useState(null);
+      const [isLoading, setIsLoading] = useState(false);
+      const [timer, setTimer] = useState(0);
+      const [mistakes, setMistakes] = useState(0);
+      const timerRef = useRef(null);
 
-      const startNewGame = useCallback((diff) => {
-        const config = DIFFICULTIES[diff];
-        const newPuzzle = generatePuzzle(config.size, config.selectRatio);
-        setPuzzle(newPuzzle);
-        setCellStates({});
-        setShowCelebration(false);
-        setShowGameOver(false);
-        setLives(MAX_LIVES);
-        setWrongCell(null);
+      // ライフ回復タイマー
+      useEffect(() => {
+        const interval = setInterval(() => {
+          setLives(prev => {
+            if (prev.current >= MAX_LIVES) return prev;
+            const now = Date.now();
+            const elapsed = now - prev.lastUpdate;
+            if (elapsed >= LIFE_RECOVERY_MINUTES * 60 * 1000) {
+              const newLives = Math.min(MAX_LIVES, prev.current + 1);
+              const updated = { current: newLives, lastUpdate: now };
+              saveLives(updated);
+              return updated;
+            }
+            return prev;
+          });
+        }, 1000);
+        return () => clearInterval(interval);
       }, []);
 
+      // ゲームタイマー
+      useEffect(() => {
+        if (screen === 'game' && puzzle && !showResult) {
+          timerRef.current = setInterval(() => setTimer(t => t + 1), 1000);
+        } else {
+          clearInterval(timerRef.current);
+        }
+        return () => clearInterval(timerRef.current);
+      }, [screen, puzzle, showResult]);
+
+      const formatTime = (seconds) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s.toString().padStart(2, '0')}`;
+      };
+
+      const getNextRecoveryTime = () => {
+        if (lives.current >= MAX_LIVES) return null;
+        const elapsed = Date.now() - lives.lastUpdate;
+        const remaining = LIFE_RECOVERY_MINUTES * 60 * 1000 - elapsed;
+        if (remaining <= 0) return '0:00';
+        const m = Math.floor(remaining / 60000);
+        const s = Math.floor((remaining % 60000) / 1000);
+        return `${m}:${s.toString().padStart(2, '0')}`;
+      };
+
+      const getTotalCleared = () => {
+        let total = 0;
+        Object.values(progress).forEach(diff => {
+          total += Object.keys(diff).filter(k => diff[k]?.cleared).length;
+        });
+        return total;
+      };
+
+      const getDifficultyCleared = (diff) => {
+        return Object.keys(progress[diff] || {}).filter(k => progress[diff][k]?.cleared).length;
+      };
+
+      const startGame = (diff, num) => {
+        if (lives.current <= 0) {
+          alert('ライフがありません。回復をお待ちください。');
+          return;
+        }
+        
+        setDifficulty(diff);
+        setProblemNumber(num);
+        setIsLoading(true);
+        setScreen('game');
+        setCellStates({});
+        setMode('select');
+        setGameLives(GAME_LIVES);
+        setShowResult(null);
+        setTimer(0);
+        setMistakes(0);
+        
+        // ライフ消費
+        const newLives = { current: lives.current - 1, lastUpdate: lives.current >= MAX_LIVES ? Date.now() : lives.lastUpdate };
+        setLives(newLives);
+        saveLives(newLives);
+        
+        setTimeout(() => {
+          const newPuzzle = generatePuzzleWithSeed(diff, num);
+          setPuzzle(newPuzzle);
+          setIsLoading(false);
+        }, 50);
+      };
+
       const handleCellClick = useCallback((r, c) => {
-        if (showGameOver || showCelebration || !puzzle) return;
+        if (!puzzle || showResult) return;
         
         const key = `${r},${c}`;
         const currentState = cellStates[key];
@@ -606,25 +1022,20 @@
         if (currentState === 'erased' && !isCorrectAnswer) return;
         
         let isWrong = false;
-        
         if (mode === 'select') {
-          if (!isCorrectAnswer && currentState !== 'selected') {
-            isWrong = true;
-          }
+          if (!isCorrectAnswer && currentState !== 'selected') isWrong = true;
         } else {
-          if (isCorrectAnswer && currentState !== 'erased') {
-            isWrong = true;
-          }
+          if (isCorrectAnswer && currentState !== 'erased') isWrong = true;
         }
         
         if (isWrong) {
           setWrongCell(key);
           setTimeout(() => setWrongCell(null), 400);
-          
-          setLives(prev => {
+          setMistakes(m => m + 1);
+          setGameLives(prev => {
             const newLives = prev - 1;
             if (newLives <= 0) {
-              setTimeout(() => setShowGameOver(true), 300);
+              setTimeout(() => setShowResult('gameover'), 300);
             }
             return newLives;
           });
@@ -632,12 +1043,11 @@
         }
         
         setCellStates(prev => {
-          const current = prev[key];
           let next;
           if (mode === 'select') {
-            next = current === 'selected' ? undefined : 'selected';
+            next = prev[key] === 'selected' ? undefined : 'selected';
           } else {
-            next = current === 'erased' ? undefined : 'erased';
+            next = prev[key] === 'erased' ? undefined : 'erased';
           }
           if (next === undefined) {
             const newStates = { ...prev };
@@ -646,109 +1056,83 @@
           }
           return { ...prev, [key]: next };
         });
-      }, [mode, showGameOver, showCelebration, puzzle, cellStates]);
+      }, [mode, puzzle, cellStates, showResult]);
 
+      // 計算系のuseMemo
       const calculateSums = useMemo(() => {
         if (!puzzle) return { rows: [], cols: [], cages: [] };
         const { size, numbers, cages } = puzzle;
-        
-        const rowSums = [];
+        const rowSums = [], colSums = [];
         for (let r = 0; r < size; r++) {
           let sum = 0;
-          for (let c = 0; c < size; c++) {
-            if (cellStates[`${r},${c}`] === 'selected') sum += numbers[r][c];
-          }
+          for (let c = 0; c < size; c++) if (cellStates[`${r},${c}`] === 'selected') sum += numbers[r][c];
           rowSums.push(sum);
         }
-        
-        const colSums = [];
         for (let c = 0; c < size; c++) {
           let sum = 0;
-          for (let r = 0; r < size; r++) {
-            if (cellStates[`${r},${c}`] === 'selected') sum += numbers[r][c];
-          }
+          for (let r = 0; r < size; r++) if (cellStates[`${r},${c}`] === 'selected') sum += numbers[r][c];
           colSums.push(sum);
         }
-        
-        const cageSums = cages.map(cage => 
-          cage.cells.reduce((sum, cell) => 
-            cellStates[`${cell.r},${cell.c}`] === 'selected' ? sum + numbers[cell.r][cell.c] : sum, 0)
-        );
-        
+        const cageSums = cages.map(cage => cage.cells.reduce((sum, cell) => cellStates[`${cell.r},${cell.c}`] === 'selected' ? sum + numbers[cell.r][cell.c] : sum, 0));
         return { rows: rowSums, cols: colSums, cages: cageSums };
       }, [puzzle, cellStates]);
 
-      const rowFullyDecided = useMemo(() => {
-        if (!puzzle) return [];
-        const { size } = puzzle;
-        const result = [];
+      const checkStatus = useMemo(() => {
+        if (!puzzle) return { completed: false, rows: [], cols: [], cages: [], rowsFull: [], colsFull: [], cagesFull: [] };
+        const { size, cages, rowSums, colSums, cageSums } = puzzle;
+        
+        const rowsFull = [], colsFull = [], cagesFull = [];
         for (let r = 0; r < size; r++) {
-          let allDecided = true;
+          let full = true;
           for (let c = 0; c < size; c++) {
-            const state = cellStates[`${r},${c}`];
-            if (state !== 'selected' && state !== 'erased') {
-              allDecided = false;
-              break;
-            }
+            const s = cellStates[`${r},${c}`];
+            if (s !== 'selected' && s !== 'erased') { full = false; break; }
           }
-          result.push(allDecided);
+          rowsFull.push(full);
         }
-        return result;
-      }, [puzzle, cellStates]);
-
-      const colFullyDecided = useMemo(() => {
-        if (!puzzle) return [];
-        const { size } = puzzle;
-        const result = [];
         for (let c = 0; c < size; c++) {
-          let allDecided = true;
+          let full = true;
           for (let r = 0; r < size; r++) {
-            const state = cellStates[`${r},${c}`];
-            if (state !== 'selected' && state !== 'erased') {
-              allDecided = false;
-              break;
-            }
+            const s = cellStates[`${r},${c}`];
+            if (s !== 'selected' && s !== 'erased') { full = false; break; }
           }
-          result.push(allDecided);
+          colsFull.push(full);
         }
-        return result;
-      }, [puzzle, cellStates]);
-
-      const cageFullyDecided = useMemo(() => {
-        if (!puzzle) return [];
-        return puzzle.cages.map(cage => {
-          return cage.cells.every(cell => {
-            const state = cellStates[`${cell.r},${cell.c}`];
-            return state === 'selected' || state === 'erased';
-          });
+        cages.forEach((cage, i) => {
+          cagesFull.push(cage.cells.every(cell => {
+            const s = cellStates[`${cell.r},${cell.c}`];
+            return s === 'selected' || s === 'erased';
+          }));
         });
-      }, [puzzle, cellStates]);
-
-      const checkCompletion = useMemo(() => {
-        if (!puzzle) return { completed: false, rows: [], cols: [], cages: [] };
-        const rowsComplete = puzzle.rowSums.map((target, i) => 
-          rowFullyDecided[i] && calculateSums.rows[i] === target
-        );
-        const colsComplete = puzzle.colSums.map((target, i) => 
-          colFullyDecided[i] && calculateSums.cols[i] === target
-        );
-        const cagesComplete = puzzle.cageSums.map((target, i) => 
-          cageFullyDecided[i] && calculateSums.cages[i] === target
-        );
+        
+        const rowsComplete = rowSums.map((t, i) => rowsFull[i] && calculateSums.rows[i] === t);
+        const colsComplete = colSums.map((t, i) => colsFull[i] && calculateSums.cols[i] === t);
+        const cagesComplete = cageSums.map((t, i) => cagesFull[i] && calculateSums.cages[i] === t);
         const completed = rowsComplete.every(Boolean) && colsComplete.every(Boolean) && cagesComplete.every(Boolean);
-        return { completed, rows: rowsComplete, cols: colsComplete, cages: cagesComplete };
-      }, [puzzle, calculateSums, rowFullyDecided, colFullyDecided, cageFullyDecided]);
+        
+        const rowsOver = rowSums.map((t, i) => calculateSums.rows[i] > t);
+        const colsOver = colSums.map((t, i) => calculateSums.cols[i] > t);
+        const cagesOver = cageSums.map((t, i) => calculateSums.cages[i] > t);
+        
+        return { completed, rows: rowsComplete, cols: colsComplete, cages: cagesComplete, rowsOver, colsOver, cagesOver };
+      }, [puzzle, cellStates, calculateSums]);
 
-      const checkOverflow = useMemo(() => {
-        if (!puzzle) return { rows: [], cols: [], cages: [] };
-        return {
-          rows: puzzle.rowSums.map((target, i) => calculateSums.rows[i] > target),
-          cols: puzzle.colSums.map((target, i) => calculateSums.cols[i] > target),
-          cages: puzzle.cageSums.map((target, i) => calculateSums.cages[i] > target),
-        };
-      }, [puzzle, calculateSums]);
+      // クリア判定
+      useEffect(() => {
+        if (checkStatus.completed && puzzle && !showResult) {
+          const stars = mistakes === 0 ? 3 : mistakes === 1 ? 2 : 1;
+          const newProgress = { ...progress };
+          if (!newProgress[difficulty]) newProgress[difficulty] = {};
+          const existing = newProgress[difficulty][problemNumber];
+          if (!existing || !existing.cleared || existing.time > timer || existing.stars < stars) {
+            newProgress[difficulty][problemNumber] = { cleared: true, time: timer, mistakes, stars };
+            setProgress(newProgress);
+            saveProgress(newProgress);
+          }
+          setShowResult('clear');
+        }
+      }, [checkStatus.completed]);
 
-      // エリアが確定したセル（白抜き用）
       const cellCageResolved = useMemo(() => {
         if (!puzzle) return {};
         const { size, cellToCage } = puzzle;
@@ -756,181 +1140,307 @@
         for (let r = 0; r < size; r++) {
           for (let c = 0; c < size; c++) {
             const key = `${r},${c}`;
-            const cageIndex = cellToCage[key];
-            if (checkCompletion.cages[cageIndex]) {
-              resolved[key] = true;
-            }
+            if (checkStatus.cages[cellToCage[key]]) resolved[key] = true;
           }
         }
         return resolved;
-      }, [puzzle, checkCompletion]);
+      }, [puzzle, checkStatus]);
 
-      useEffect(() => {
-        if (checkCompletion.completed && puzzle && !showGameOver) {
-          setShowCelebration(true);
-        }
-      }, [checkCompletion.completed, puzzle, showGameOver]);
-
-      useEffect(() => { startNewGame(difficulty); }, []);
-
-      if (!puzzle) return <div className="container"><div className="main">読み込み中...</div></div>;
-
-      const { size, numbers, cages, cellToCage, rowSums, colSums, cageSums } = puzzle;
-
-      return (
-        <div className="container">
-          <header className="header">
-            <h1 className="title">Number Sums</h1>
-            <div className="difficulty-btns">
-              {Object.entries(DIFFICULTIES).map(([key, config]) => (
-                <button
-                  key={key}
-                  className={`diff-btn ${difficulty === key ? 'active' : ''}`}
-                  onClick={() => { setDifficulty(key); startNewGame(key); }}
-                >
-                  {config.label}
-                </button>
-              ))}
-            </div>
-          </header>
-          
-          <div className="lives-container">
-            {Array.from({ length: MAX_LIVES }).map((_, i) => (
-              <span key={i} className={`heart ${i >= lives ? 'lost' : ''}`}>❤️</span>
-            ))}
-          </div>
-
-          <main className="main">
-            {showCelebration && (
-              <div className="overlay">
-                <div className="modal">
-                  <div className="modal-emoji">🎉</div>
-                  <div className="modal-title">クリア！</div>
-                  <div className="modal-text">おめでとうございます！</div>
-                  <button className="modal-btn" onClick={() => { setShowCelebration(false); startNewGame(difficulty); }}>
-                    もう一度プレイ
-                  </button>
-                </div>
-              </div>
-            )}
-            
-            {showGameOver && (
-              <div className="overlay">
-                <div className="modal">
-                  <div className="modal-emoji">💔</div>
-                  <div className="modal-title gameover">ゲームオーバー</div>
-                  <div className="modal-text">ライフがなくなりました</div>
-                  <button className="modal-btn" onClick={() => startNewGame(difficulty)}>
-                    もう一度プレイ
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div className="board-container">
-              <div className="col-sums">
-                {colSums.map((sum, c) => (
-                  <div 
-                    key={c} 
-                    className={`sum-box ${checkCompletion.cols[c] ? 'complete' : checkOverflow.cols[c] ? 'over' : ''}`}
-                  >
-                    {calculateSums.cols[c] > 0 && (
-                      <span className="current">{calculateSums.cols[c]}</span>
-                    )}
-                    {sum}
-                  </div>
-                ))}
-              </div>
-              <div className="board-row">
-                <div className="row-sums">
-                  {rowSums.map((sum, r) => (
-                    <div 
-                      key={r} 
-                      className={`row-sum-box ${checkCompletion.rows[r] ? 'complete' : checkOverflow.rows[r] ? 'over' : ''}`}
-                    >
-                      {calculateSums.rows[r] > 0 && (
-                        <span className="current">{calculateSums.rows[r]}</span>
-                      )}
-                      {sum}
-                    </div>
+      // ===== 画面レンダリング =====
+      
+      // ホーム画面
+      if (screen === 'home') {
+        const recoveryTime = getNextRecoveryTime();
+        return (
+          <div className="app">
+            <div className="home-screen">
+              <div className="home-logo">🔢</div>
+              <h1 className="home-title">Number Sums</h1>
+              <p className="home-subtitle">数字パズルゲーム</p>
+              
+              <button className="home-btn primary" onClick={() => {
+                // 続きからプレイ
+                for (const diff of ['easy', 'medium', 'hard']) {
+                  const maxProb = DIFFICULTIES[diff].problems;
+                  for (let i = 1; i <= maxProb; i++) {
+                    if (!progress[diff]?.[i]?.cleared) {
+                      startGame(diff, i);
+                      return;
+                    }
+                  }
+                }
+                setScreen('select');
+              }}>
+                続きからプレイ
+              </button>
+              
+              <button className="home-btn secondary" onClick={() => setScreen('select')}>
+                問題を選ぶ
+              </button>
+              
+              <div className="lives-display">
+                <div className="lives-hearts">
+                  {Array.from({ length: MAX_LIVES }).map((_, i) => (
+                    <span key={i} style={{ opacity: i < lives.current ? 1 : 0.3 }}>❤️</span>
                   ))}
                 </div>
-                <div className="grid" style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}>
-                  {Array.from({ length: size }).map((_, r) =>
-                    Array.from({ length: size }).map((_, c) => {
-                      const key = `${r},${c}`;
-                      const state = cellStates[key];
-                      const cageIndex = cellToCage[key];
-                      const cage = cages[cageIndex];
-                      const value = numbers[r][c];
-                      const isCageResolved = cellCageResolved[key];
-                      const isWrong = wrongCell === key;
-                      
-                      const isTopLeft = cage.cells.every(cell => cell.r > r || (cell.r === r && cell.c >= c));
-                      
-                      const cellStyle = {
-                        backgroundColor: isCageResolved ? '#fff' : cage.color,
-                        borderRight: c === size - 1 ? 'none' : undefined,
-                        borderBottom: r === size - 1 ? 'none' : undefined,
-                      };
-
-                      return (
-                        <div 
-                          key={key} 
-                          className={`cell ${state === 'selected' ? 'selected' : state === 'erased' ? 'erased' : ''} ${isCageResolved ? 'cage-resolved' : ''} ${isWrong ? 'wrong' : ''}`}
-                          style={cellStyle} 
-                          onClick={() => handleCellClick(r, c)}
-                        >
-                          {isTopLeft && (
-                            <span className={`cage-hint ${checkCompletion.cages[cageIndex] ? 'complete' : checkOverflow.cages[cageIndex] ? 'over' : ''}`}>
-                              {cageSums[cageIndex]}
-                            </span>
-                          )}
-                          <span className="number">{value}</span>
-                        </div>
-                      );
-                    })
-                  )}
+                {recoveryTime ? (
+                  <div className="lives-timer">次の回復まで: {recoveryTime}</div>
+                ) : (
+                  <div className="lives-full">ライフ満タン</div>
+                )}
+              </div>
+              
+              <div className="home-stats">
+                <div className="stat-item">
+                  <div className="stat-value">{getTotalCleared()}</div>
+                  <div className="stat-label">クリア数</div>
+                </div>
+                <div className="stat-item">
+                  <div className="stat-value">{getDifficultyCleared('easy')}/{DIFFICULTIES.easy.problems}</div>
+                  <div className="stat-label">簡単</div>
+                </div>
+                <div className="stat-item">
+                  <div className="stat-value">{getDifficultyCleared('medium')}/{DIFFICULTIES.medium.problems}</div>
+                  <div className="stat-label">普通</div>
                 </div>
               </div>
             </div>
-
-            <div className="controls">
-              <div className="mode-switch">
-                <button 
-                  className={`mode-btn ${mode === 'select' ? 'active' : ''}`}
-                  onClick={() => setMode('select')}
-                >
-                  <span className="icon">⭕</span>
-                  <span className="label">選択</span>
-                </button>
-                <button 
-                  className={`mode-btn ${mode === 'erase' ? 'active' : ''}`}
-                  onClick={() => setMode('erase')}
-                >
-                  <span className="icon">✕</span>
-                  <span className="label">消去</span>
-                </button>
+          </div>
+        );
+      }
+      
+      // 問題選択画面
+      if (screen === 'select') {
+        const config = DIFFICULTIES[difficulty];
+        return (
+          <div className="app">
+            <div className="select-screen">
+              <div className="select-header">
+                <button className="back-btn" onClick={() => setScreen('home')}>←</button>
+                <span className="select-title">問題を選ぶ</span>
+                <span style={{ fontSize: '20px' }}>
+                  {Array.from({ length: lives.current }).map((_, i) => '❤️').join('')}
+                  {Array.from({ length: MAX_LIVES - lives.current }).map((_, i) => '🖤').join('')}
+                </span>
               </div>
-              <button className="new-game-btn" onClick={() => startNewGame(difficulty)}>
-                新しいパズル
-              </button>
+              
+              <div className="diff-tabs">
+                {Object.entries(DIFFICULTIES).map(([key, cfg]) => (
+                  <button
+                    key={key}
+                    className={`diff-tab ${difficulty === key ? 'active' : ''}`}
+                    onClick={() => setDifficulty(key)}
+                  >
+                    {cfg.label}
+                    <div className="count">{getDifficultyCleared(key)}/{cfg.problems}</div>
+                  </button>
+                ))}
+              </div>
+              
+              <div className="problem-grid">
+                {Array.from({ length: config.problems }).map((_, i) => {
+                  const num = i + 1;
+                  const data = progress[difficulty]?.[num];
+                  const cleared = data?.cleared;
+                  const stars = data?.stars || 0;
+                  return (
+                    <button
+                      key={num}
+                      className={`problem-btn ${cleared ? 'cleared' : ''}`}
+                      onClick={() => startGame(difficulty, num)}
+                    >
+                      {num}
+                      {cleared && <div className="stars">{'⭐'.repeat(stars)}</div>}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-
-            <div className="rules">
-              <h3>🎮 遊び方</h3>
-              <ul>
-                <li>正しい数字を選んで（⭕）合計を目標値に合わせる</li>
-                <li>不要な数字は消去でマーク</li>
-                <li>間違えるとライフが減ります（2回でゲームオーバー）</li>
-              </ul>
+          </div>
+        );
+      }
+      
+      // ゲーム画面
+      if (screen === 'game') {
+        if (isLoading || !puzzle) {
+          return (
+            <div className="app">
+              <div className="game-screen">
+                <div className="game-header">
+                  <button className="back-btn" onClick={() => setScreen('select')}>←</button>
+                  <span className="problem-number">No.{problemNumber}</span>
+                  <span></span>
+                </div>
+                <div className="loading">
+                  <div className="loading-spinner"></div>
+                  <div className="loading-text">パズルを生成中...</div>
+                </div>
+              </div>
             </div>
-          </main>
-        </div>
-      );
+          );
+        }
+        
+        const { size, numbers, cages, cellToCage, rowSums, colSums, cageSums } = puzzle;
+        
+        return (
+          <div className="app">
+            <div className="game-screen">
+              <div className="game-header">
+                <div className="game-info">
+                  <button className="back-btn" onClick={() => setScreen('select')}>←</button>
+                  <span className="problem-number">{DIFFICULTIES[difficulty].label} No.{problemNumber}</span>
+                </div>
+                <span className="game-timer">{formatTime(timer)}</span>
+                <span className="game-lives">
+                  {'❤️'.repeat(gameLives)}{'🖤'.repeat(GAME_LIVES - gameLives)}
+                </span>
+              </div>
+              
+              <div className="game-main">
+                {showResult && (
+                  <div className="overlay">
+                    <div className="modal">
+                      {showResult === 'clear' ? (
+                        <>
+                          <div className="modal-emoji">🎉</div>
+                          <div className="modal-title">クリア！</div>
+                          <div className="modal-stars">{'⭐'.repeat(mistakes === 0 ? 3 : mistakes === 1 ? 2 : 1)}</div>
+                          <div className="modal-stats">
+                            <div className="modal-stat">
+                              <div className="modal-stat-value">{formatTime(timer)}</div>
+                              <div className="modal-stat-label">タイム</div>
+                            </div>
+                            <div className="modal-stat">
+                              <div className="modal-stat-value">{mistakes}</div>
+                              <div className="modal-stat-label">ミス</div>
+                            </div>
+                          </div>
+                          <button className="modal-btn" onClick={() => {
+                            const next = problemNumber + 1;
+                            if (next <= DIFFICULTIES[difficulty].problems) {
+                              startGame(difficulty, next);
+                            } else {
+                              setScreen('select');
+                            }
+                          }}>
+                            次の問題へ
+                          </button>
+                          <button className="modal-btn secondary" onClick={() => setScreen('select')}>
+                            問題選択に戻る
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <div className="modal-emoji">💔</div>
+                          <div className="modal-title gameover">ゲームオーバー</div>
+                          <div className="modal-stats">
+                            <div className="modal-stat">
+                              <div className="modal-stat-value">{formatTime(timer)}</div>
+                              <div className="modal-stat-label">タイム</div>
+                            </div>
+                            <div className="modal-stat">
+                              <div className="modal-stat-value">{mistakes}</div>
+                              <div className="modal-stat-label">ミス</div>
+                            </div>
+                          </div>
+                          <button className="modal-btn" onClick={() => startGame(difficulty, problemNumber)}>
+                            もう一度挑戦
+                          </button>
+                          <button className="modal-btn secondary" onClick={() => setScreen('select')}>
+                            問題選択に戻る
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="board-container">
+                  <div className="col-sums">
+                    {colSums.map((sum, c) => (
+                      <div key={c} className={`sum-box ${checkStatus.cols[c] ? 'complete' : checkStatus.colsOver?.[c] ? 'over' : ''}`}>
+                        {calculateSums.cols[c] > 0 && <span className="current">{calculateSums.cols[c]}</span>}
+                        {sum}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="board-row">
+                    <div className="row-sums">
+                      {rowSums.map((sum, r) => (
+                        <div key={r} className={`row-sum-box ${checkStatus.rows[r] ? 'complete' : checkStatus.rowsOver?.[r] ? 'over' : ''}`}>
+                          {calculateSums.rows[r] > 0 && <span className="current">{calculateSums.rows[r]}</span>}
+                          {sum}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="grid" style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}>
+                      {Array.from({ length: size }).map((_, r) =>
+                        Array.from({ length: size }).map((_, c) => {
+                          const key = `${r},${c}`;
+                          const state = cellStates[key];
+                          const cageIndex = cellToCage[key];
+                          const cage = cages[cageIndex];
+                          const value = numbers[r][c];
+                          const isCageResolved = cellCageResolved[key];
+                          const isWrong = wrongCell === key;
+                          const isTopLeft = cage.cells.every(cell => cell.r > r || (cell.r === r && cell.c >= c));
+                          
+                          return (
+                            <div
+                              key={key}
+                              className={`cell ${state === 'selected' ? 'selected' : state === 'erased' ? 'erased' : ''} ${isCageResolved ? 'cage-resolved' : ''} ${isWrong ? 'wrong' : ''}`}
+                              style={{
+                                backgroundColor: isCageResolved ? '#fff' : cage.color,
+                                borderRight: c === size - 1 ? 'none' : undefined,
+                                borderBottom: r === size - 1 ? 'none' : undefined,
+                              }}
+                              onClick={() => handleCellClick(r, c)}
+                            >
+                              {isTopLeft && (
+                                <span className={`cage-hint ${checkStatus.cages[cageIndex] ? 'complete' : checkStatus.cagesOver?.[cageIndex] ? 'over' : ''}`}>
+                                  {cageSums[cageIndex]}
+                                </span>
+                              )}
+                              <span className="number">{value}</span>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="controls">
+                  <div className="mode-switch">
+                    <button className={`mode-btn ${mode === 'select' ? 'active' : ''}`} onClick={() => setMode('select')}>
+                      <span className="icon">⭕</span>
+                      <span className="label">選択</span>
+                    </button>
+                    <button className={`mode-btn ${mode === 'erase' ? 'active' : ''}`} onClick={() => setMode('erase')}>
+                      <span className="icon">✕</span>
+                      <span className="label">消去</span>
+                    </button>
+                  </div>
+                  <div className="game-actions">
+                    <button className="action-btn hint" onClick={() => alert('ヒント機能は広告視聴後に利用可能になります')}>
+                      💡 ヒント
+                    </button>
+                    <button className="action-btn reset" onClick={() => setCellStates({})}>
+                      🔄 リセット
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+      
+      return null;
     }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<NumberSums />);
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
 </html>
