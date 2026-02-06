@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Number Sums</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      touch-action: manipulation;
+    }
+    .container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .header {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #333;
+    }
+    .difficulty-btns {
+      display: flex;
+      gap: 6px;
+    }
+    .diff-btn {
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .diff-btn.active {
+      background: #5c6bc0;
+      color: white;
+    }
+    .diff-btn:not(.active) {
+      background: #f0f0f0;
+      color: #666;
+    }
+    .lives-container {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+    }
+    .heart {
+      font-size: 28px;
+      transition: all 0.3s;
+    }
+    .heart.lost {
+      opacity: 0.2;
+      transform: scale(0.8);
+    }
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 8px;
+      gap: 16px;
+    }
+    .board-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .col-sums {
+      display: flex;
+      margin-left: 44px;
+    }
+    .sum-box {
+      width: 44px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #333;
+      position: relative;
+    }
+    .sum-box.complete { color: #aaa; text-decoration: line-through; }
+    .sum-box.over { color: #e53935; }
+    .sum-box .current {
+      position: absolute;
+      top: 0;
+      right: 1px;
+      font-size: 9px;
+      font-weight: 600;
+      color: #888;
+    }
+    .sum-box.complete .current { display: none; }
+    .board-row {
+      display: flex;
+      gap: 2px;
+    }
+    .row-sums {
+      display: flex;
+      flex-direction: column;
+    }
+    .row-sum-box {
+      width: 42px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #333;
+      position: relative;
+    }
+    .row-sum-box.complete { color: #aaa; text-decoration: line-through; }
+    .row-sum-box.over { color: #e53935; }
+    .row-sum-box .current {
+      position: absolute;
+      top: 2px;
+      right: 1px;
+      font-size: 9px;
+      font-weight: 600;
+      color: #888;
+    }
+    .row-sum-box.complete .current { display: none; }
+    .grid {
+      display: grid;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .cell {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      position: relative;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.2s;
+      color: #333;
+    }
+    .cell:active { opacity: 0.7; }
+    .cell .cage-hint {
+      position: absolute;
+      top: 2px;
+      left: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #555;
+    }
+    .cell .cage-hint.complete { color: #4caf50; text-decoration: line-through; }
+    .cell .cage-hint.over { color: #e53935; }
+    
+    .cell.selected .number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border: 2.5px solid #333;
+      border-radius: 50%;
+    }
+    
+    .cell.erased .number {
+      visibility: hidden;
+    }
+    
+    /* エリアが確定したときのみ白抜き */
+    .cell.cage-resolved {
+      background-color: #fff !important;
+    }
+    
+    .cell.wrong {
+      animation: shake 0.4s;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+    
+    .controls {
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 340px;
+    }
+    .mode-switch {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .mode-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      border: 2px solid #eee;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-btn.active {
+      border-color: #5c6bc0;
+      background: #f0f0ff;
+    }
+    .mode-btn .icon {
+      font-size: 20px;
+    }
+    .mode-btn .label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+    }
+    .mode-btn.active .label {
+      color: #5c6bc0;
+    }
+    .new-game-btn {
+      width: 100%;
+      padding: 12px;
+      background: #f5f5f5;
+      color: #333;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .new-game-btn:active { background: #eee; }
+    
+    .rules {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 12px;
+      max-width: 340px;
+      font-size: 11px;
+      color: #666;
+      line-height: 1.5;
+    }
+    .rules h3 { color: #333; font-size: 12px; margin-bottom: 6px; }
+    .rules ul { padding-left: 16px; }
+    .rules li { margin-bottom: 3px; }
+    
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      animation: fadeIn 0.3s;
+    }
+    .modal {
+      background: white;
+      border-radius: 24px;
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      animation: bounceIn 0.5s;
+      max-width: 300px;
+    }
+    .modal-emoji { font-size: 56px; margin-bottom: 12px; }
+    .modal-title { font-size: 24px; font-weight: 700; color: #333; margin-bottom: 8px; }
+    .modal-title.gameover { color: #e53935; }
+    .modal-text { color: #666; margin-bottom: 20px; font-size: 14px; }
+    .modal-btn {
+      padding: 12px 32px;
+      background: #5c6bc0;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes bounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    @media (max-width: 380px) {
+      .cell { width: 38px; height: 38px; font-size: 17px; }
+      .cell.selected .number { width: 28px; height: 28px; }
+      .sum-box { width: 38px; height: 32px; font-size: 14px; }
+      .row-sum-box { width: 36px; height: 38px; font-size: 14px; }
+      .col-sums { margin-left: 38px; }
+      .cell .cage-hint { font-size: 9px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useCallback, useMemo } = React;
+
+    const PASTEL_COLORS = [
+      '#FFCDD2', '#B3E5FC', '#C8E6C9', '#FFE0B2', '#E1BEE7', '#FFF9C4',
+      '#B2EBF2', '#F8BBD0', '#DCEDC8', '#D7CCC8', '#CFD8DC', '#F0F4C3',
+    ];
+
+    const DIFFICULTIES = {
+      easy: { size: 7, selectRatio: 0.5, label: '簡単' },
+      medium: { size: 8, selectRatio: 0.45, label: '普通' },
+      hard: { size: 9, selectRatio: 0.4, label: '難しい' },
+    };
+
+    const MAX_LIVES = 2;
+    const MIN_CAGE_SIZE = 6;
+
+    function generateCages(size) {
+      const totalCells = size * size;
+      const cageCount = size;
+      const baseCageSize = Math.floor(totalCells / cageCount);
+      
+      let cages = null;
+      let attempts = 0;
+      const maxAttempts = 50;
+      
+      while (attempts < maxAttempts) {
+        attempts++;
+        cages = tryGenerateCages(size, cageCount, baseCageSize);
+        if (cages && cages.every(cage => cage.length >= MIN_CAGE_SIZE)) {
+          break;
+        }
+      }
+      
+      if (!cages || !cages.every(cage => cage.length >= MIN_CAGE_SIZE)) {
+        cages = mergeSmallerCages(cages, size);
+      }
+      
+      return cages;
+    }
+    
+    function tryGenerateCages(size, cageCount, baseCageSize) {
+      const cells = [];
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          cells.push({ r, c });
+        }
+      }
+      
+      const cages = [];
+      const assigned = new Set();
+      
+      for (let i = 0; i < cageCount; i++) {
+        const unassigned = cells.filter(cell => !assigned.has(`${cell.r},${cell.c}`));
+        if (unassigned.length === 0) break;
+        
+        const start = unassigned[Math.floor(Math.random() * unassigned.length)];
+        const cage = [start];
+        assigned.add(`${start.r},${start.c}`);
+        
+        const isLastCage = i === cageCount - 1;
+        const targetSize = isLastCage ? unassigned.length : Math.max(MIN_CAGE_SIZE, baseCageSize + Math.floor(Math.random() * 3) - 1);
+        
+        while (cage.length < targetSize) {
+          const neighbors = [];
+          for (const cell of cage) {
+            const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+            for (const [dr, dc] of dirs) {
+              const nr = cell.r + dr, nc = cell.c + dc;
+              if (nr >= 0 && nr < size && nc >= 0 && nc < size && !assigned.has(`${nr},${nc}`)) {
+                neighbors.push({ r: nr, c: nc });
+              }
+            }
+          }
+          if (neighbors.length === 0) break;
+          const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+          cage.push(next);
+          assigned.add(`${next.r},${next.c}`);
+        }
+        cages.push(cage);
+      }
+      
+      for (const cell of cells) {
+        if (!assigned.has(`${cell.r},${cell.c}`)) {
+          let added = false;
+          for (const cage of cages) {
+            for (const cageCell of cage) {
+              const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+              for (const [dr, dc] of dirs) {
+                if (cageCell.r + dr === cell.r && cageCell.c + dc === cell.c) {
+                  cage.push(cell);
+                  added = true;
+                  break;
+                }
+              }
+              if (added) break;
+            }
+            if (added) break;
+          }
+          if (!added && cages.length > 0) {
+            cages[cages.length - 1].push(cell);
+          }
+        }
+      }
+      
+      return cages;
+    }
+    
+    function mergeSmallerCages(cages, size) {
+      if (!cages) return [];
+      
+      let merged = [...cages.map(cage => [...cage])];
+      
+      let changed = true;
+      while (changed) {
+        changed = false;
+        for (let i = merged.length - 1; i >= 0; i--) {
+          if (merged[i].length < MIN_CAGE_SIZE) {
+            let bestNeighbor = -1;
+            let bestScore = Infinity;
+            
+            for (let j = 0; j < merged.length; j++) {
+              if (i === j) continue;
+              
+              let isAdjacent = false;
+              for (const cellA of merged[i]) {
+                for (const cellB of merged[j]) {
+                  const dr = Math.abs(cellA.r - cellB.r);
+                  const dc = Math.abs(cellA.c - cellB.c);
+                  if ((dr === 1 && dc === 0) || (dr === 0 && dc === 1)) {
+                    isAdjacent = true;
+                    break;
+                  }
+                }
+                if (isAdjacent) break;
+              }
+              
+              if (isAdjacent) {
+                const newSize = merged[i].length + merged[j].length;
+                if (newSize < bestScore) {
+                  bestScore = newSize;
+                  bestNeighbor = j;
+                }
+              }
+            }
+            
+            if (bestNeighbor !== -1) {
+              merged[bestNeighbor] = [...merged[bestNeighbor], ...merged[i]];
+              merged.splice(i, 1);
+              changed = true;
+              break;
+            }
+          }
+        }
+      }
+      
+      return merged;
+    }
+
+    function generatePuzzle(size, selectRatio) {
+      const numbers = [];
+      for (let r = 0; r < size; r++) {
+        const row = [];
+        for (let c = 0; c < size; c++) {
+          row.push(Math.floor(Math.random() * 9) + 1);
+        }
+        numbers.push(row);
+      }
+      
+      const solution = [];
+      for (let r = 0; r < size; r++) {
+        const row = [];
+        for (let c = 0; c < size; c++) {
+          row.push(Math.random() < selectRatio);
+        }
+        solution.push(row);
+      }
+      
+      for (let r = 0; r < size; r++) {
+        if (!solution[r].some(v => v)) {
+          solution[r][Math.floor(Math.random() * size)] = true;
+        }
+      }
+      for (let c = 0; c < size; c++) {
+        let hasSelection = false;
+        for (let r = 0; r < size; r++) {
+          if (solution[r][c]) hasSelection = true;
+        }
+        if (!hasSelection) {
+          solution[Math.floor(Math.random() * size)][c] = true;
+        }
+      }
+      
+      const cages = generateCages(size);
+      const cagesWithColor = cages.map((cage, index) => ({
+        cells: cage,
+        color: PASTEL_COLORS[index % PASTEL_COLORS.length],
+        id: index,
+      }));
+      
+      const cellToCage = {};
+      cagesWithColor.forEach((cage, cageIndex) => {
+        cage.cells.forEach(cell => {
+          cellToCage[`${cell.r},${cell.c}`] = cageIndex;
+        });
+      });
+      
+      cagesWithColor.forEach(cage => {
+        const hasSelection = cage.cells.some(cell => solution[cell.r][cell.c]);
+        if (!hasSelection && cage.cells.length > 0) {
+          const randomCell = cage.cells[Math.floor(Math.random() * cage.cells.length)];
+          solution[randomCell.r][randomCell.c] = true;
+        }
+      });
+      
+      const rowSums = [];
+      for (let r = 0; r < size; r++) {
+        let sum = 0;
+        for (let c = 0; c < size; c++) {
+          if (solution[r][c]) sum += numbers[r][c];
+        }
+        rowSums.push(sum);
+      }
+      
+      const colSums = [];
+      for (let c = 0; c < size; c++) {
+        let sum = 0;
+        for (let r = 0; r < size; r++) {
+          if (solution[r][c]) sum += numbers[r][c];
+        }
+        colSums.push(sum);
+      }
+      
+      const cageSums = cagesWithColor.map(cage => 
+        cage.cells.reduce((sum, cell) => 
+          solution[cell.r][cell.c] ? sum + numbers[cell.r][cell.c] : sum, 0)
+      );
+      
+      return { 
+        size, 
+        numbers, 
+        solution, 
+        cages: cagesWithColor, 
+        cellToCage, 
+        rowSums, 
+        colSums, 
+        cageSums
+      };
+    }
+
+    function NumberSums() {
+      const [difficulty, setDifficulty] = useState('easy');
+      const [puzzle, setPuzzle] = useState(null);
+      const [cellStates, setCellStates] = useState({});
+      const [mode, setMode] = useState('select');
+      const [showCelebration, setShowCelebration] = useState(false);
+      const [showGameOver, setShowGameOver] = useState(false);
+      const [lives, setLives] = useState(MAX_LIVES);
+      const [wrongCell, setWrongCell] = useState(null);
+
+      const startNewGame = useCallback((diff) => {
+        const config = DIFFICULTIES[diff];
+        const newPuzzle = generatePuzzle(config.size, config.selectRatio);
+        setPuzzle(newPuzzle);
+        setCellStates({});
+        setShowCelebration(false);
+        setShowGameOver(false);
+        setLives(MAX_LIVES);
+        setWrongCell(null);
+      }, []);
+
+      const handleCellClick = useCallback((r, c) => {
+        if (showGameOver || showCelebration || !puzzle) return;
+        
+        const key = `${r},${c}`;
+        const currentState = cellStates[key];
+        const isCorrectAnswer = puzzle.solution[r][c];
+        
+        if (currentState === 'selected' && isCorrectAnswer) return;
+        if (currentState === 'erased' && !isCorrectAnswer) return;
+        
+        let isWrong = false;
+        
+        if (mode === 'select') {
+          if (!isCorrectAnswer && currentState !== 'selected') {
+            isWrong = true;
+          }
+        } else {
+          if (isCorrectAnswer && currentState !== 'erased') {
+            isWrong = true;
+          }
+        }
+        
+        if (isWrong) {
+          setWrongCell(key);
+          setTimeout(() => setWrongCell(null), 400);
+          
+          setLives(prev => {
+            const newLives = prev - 1;
+            if (newLives <= 0) {
+              setTimeout(() => setShowGameOver(true), 300);
+            }
+            return newLives;
+          });
+          return;
+        }
+        
+        setCellStates(prev => {
+          const current = prev[key];
+          let next;
+          if (mode === 'select') {
+            next = current === 'selected' ? undefined : 'selected';
+          } else {
+            next = current === 'erased' ? undefined : 'erased';
+          }
+          if (next === undefined) {
+            const newStates = { ...prev };
+            delete newStates[key];
+            return newStates;
+          }
+          return { ...prev, [key]: next };
+        });
+      }, [mode, showGameOver, showCelebration, puzzle, cellStates]);
+
+      const calculateSums = useMemo(() => {
+        if (!puzzle) return { rows: [], cols: [], cages: [] };
+        const { size, numbers, cages } = puzzle;
+        
+        const rowSums = [];
+        for (let r = 0; r < size; r++) {
+          let sum = 0;
+          for (let c = 0; c < size; c++) {
+            if (cellStates[`${r},${c}`] === 'selected') sum += numbers[r][c];
+          }
+          rowSums.push(sum);
+        }
+        
+        const colSums = [];
+        for (let c = 0; c < size; c++) {
+          let sum = 0;
+          for (let r = 0; r < size; r++) {
+            if (cellStates[`${r},${c}`] === 'selected') sum += numbers[r][c];
+          }
+          colSums.push(sum);
+        }
+        
+        const cageSums = cages.map(cage => 
+          cage.cells.reduce((sum, cell) => 
+            cellStates[`${cell.r},${cell.c}`] === 'selected' ? sum + numbers[cell.r][cell.c] : sum, 0)
+        );
+        
+        return { rows: rowSums, cols: colSums, cages: cageSums };
+      }, [puzzle, cellStates]);
+
+      const rowFullyDecided = useMemo(() => {
+        if (!puzzle) return [];
+        const { size } = puzzle;
+        const result = [];
+        for (let r = 0; r < size; r++) {
+          let allDecided = true;
+          for (let c = 0; c < size; c++) {
+            const state = cellStates[`${r},${c}`];
+            if (state !== 'selected' && state !== 'erased') {
+              allDecided = false;
+              break;
+            }
+          }
+          result.push(allDecided);
+        }
+        return result;
+      }, [puzzle, cellStates]);
+
+      const colFullyDecided = useMemo(() => {
+        if (!puzzle) return [];
+        const { size } = puzzle;
+        const result = [];
+        for (let c = 0; c < size; c++) {
+          let allDecided = true;
+          for (let r = 0; r < size; r++) {
+            const state = cellStates[`${r},${c}`];
+            if (state !== 'selected' && state !== 'erased') {
+              allDecided = false;
+              break;
+            }
+          }
+          result.push(allDecided);
+        }
+        return result;
+      }, [puzzle, cellStates]);
+
+      const cageFullyDecided = useMemo(() => {
+        if (!puzzle) return [];
+        return puzzle.cages.map(cage => {
+          return cage.cells.every(cell => {
+            const state = cellStates[`${cell.r},${cell.c}`];
+            return state === 'selected' || state === 'erased';
+          });
+        });
+      }, [puzzle, cellStates]);
+
+      const checkCompletion = useMemo(() => {
+        if (!puzzle) return { completed: false, rows: [], cols: [], cages: [] };
+        const rowsComplete = puzzle.rowSums.map((target, i) => 
+          rowFullyDecided[i] && calculateSums.rows[i] === target
+        );
+        const colsComplete = puzzle.colSums.map((target, i) => 
+          colFullyDecided[i] && calculateSums.cols[i] === target
+        );
+        const cagesComplete = puzzle.cageSums.map((target, i) => 
+          cageFullyDecided[i] && calculateSums.cages[i] === target
+        );
+        const completed = rowsComplete.every(Boolean) && colsComplete.every(Boolean) && cagesComplete.every(Boolean);
+        return { completed, rows: rowsComplete, cols: colsComplete, cages: cagesComplete };
+      }, [puzzle, calculateSums, rowFullyDecided, colFullyDecided, cageFullyDecided]);
+
+      const checkOverflow = useMemo(() => {
+        if (!puzzle) return { rows: [], cols: [], cages: [] };
+        return {
+          rows: puzzle.rowSums.map((target, i) => calculateSums.rows[i] > target),
+          cols: puzzle.colSums.map((target, i) => calculateSums.cols[i] > target),
+          cages: puzzle.cageSums.map((target, i) => calculateSums.cages[i] > target),
+        };
+      }, [puzzle, calculateSums]);
+
+      // エリアが確定したセル（白抜き用）
+      const cellCageResolved = useMemo(() => {
+        if (!puzzle) return {};
+        const { size, cellToCage } = puzzle;
+        const resolved = {};
+        for (let r = 0; r < size; r++) {
+          for (let c = 0; c < size; c++) {
+            const key = `${r},${c}`;
+            const cageIndex = cellToCage[key];
+            if (checkCompletion.cages[cageIndex]) {
+              resolved[key] = true;
+            }
+          }
+        }
+        return resolved;
+      }, [puzzle, checkCompletion]);
+
+      useEffect(() => {
+        if (checkCompletion.completed && puzzle && !showGameOver) {
+          setShowCelebration(true);
+        }
+      }, [checkCompletion.completed, puzzle, showGameOver]);
+
+      useEffect(() => { startNewGame(difficulty); }, []);
+
+      if (!puzzle) return <div className="container"><div className="main">読み込み中...</div></div>;
+
+      const { size, numbers, cages, cellToCage, rowSums, colSums, cageSums } = puzzle;
+
+      return (
+        <div className="container">
+          <header className="header">
+            <h1 className="title">Number Sums</h1>
+            <div className="difficulty-btns">
+              {Object.entries(DIFFICULTIES).map(([key, config]) => (
+                <button
+                  key={key}
+                  className={`diff-btn ${difficulty === key ? 'active' : ''}`}
+                  onClick={() => { setDifficulty(key); startNewGame(key); }}
+                >
+                  {config.label}
+                </button>
+              ))}
+            </div>
+          </header>
+          
+          <div className="lives-container">
+            {Array.from({ length: MAX_LIVES }).map((_, i) => (
+              <span key={i} className={`heart ${i >= lives ? 'lost' : ''}`}>❤️</span>
+            ))}
+          </div>
+
+          <main className="main">
+            {showCelebration && (
+              <div className="overlay">
+                <div className="modal">
+                  <div className="modal-emoji">🎉</div>
+                  <div className="modal-title">クリア！</div>
+                  <div className="modal-text">おめでとうございます！</div>
+                  <button className="modal-btn" onClick={() => { setShowCelebration(false); startNewGame(difficulty); }}>
+                    もう一度プレイ
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {showGameOver && (
+              <div className="overlay">
+                <div className="modal">
+                  <div className="modal-emoji">💔</div>
+                  <div className="modal-title gameover">ゲームオーバー</div>
+                  <div className="modal-text">ライフがなくなりました</div>
+                  <button className="modal-btn" onClick={() => startNewGame(difficulty)}>
+                    もう一度プレイ
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="board-container">
+              <div className="col-sums">
+                {colSums.map((sum, c) => (
+                  <div 
+                    key={c} 
+                    className={`sum-box ${checkCompletion.cols[c] ? 'complete' : checkOverflow.cols[c] ? 'over' : ''}`}
+                  >
+                    {calculateSums.cols[c] > 0 && (
+                      <span className="current">{calculateSums.cols[c]}</span>
+                    )}
+                    {sum}
+                  </div>
+                ))}
+              </div>
+              <div className="board-row">
+                <div className="row-sums">
+                  {rowSums.map((sum, r) => (
+                    <div 
+                      key={r} 
+                      className={`row-sum-box ${checkCompletion.rows[r] ? 'complete' : checkOverflow.rows[r] ? 'over' : ''}`}
+                    >
+                      {calculateSums.rows[r] > 0 && (
+                        <span className="current">{calculateSums.rows[r]}</span>
+                      )}
+                      {sum}
+                    </div>
+                  ))}
+                </div>
+                <div className="grid" style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}>
+                  {Array.from({ length: size }).map((_, r) =>
+                    Array.from({ length: size }).map((_, c) => {
+                      const key = `${r},${c}`;
+                      const state = cellStates[key];
+                      const cageIndex = cellToCage[key];
+                      const cage = cages[cageIndex];
+                      const value = numbers[r][c];
+                      const isCageResolved = cellCageResolved[key];
+                      const isWrong = wrongCell === key;
+                      
+                      const isTopLeft = cage.cells.every(cell => cell.r > r || (cell.r === r && cell.c >= c));
+                      
+                      const cellStyle = {
+                        backgroundColor: isCageResolved ? '#fff' : cage.color,
+                        borderRight: c === size - 1 ? 'none' : undefined,
+                        borderBottom: r === size - 1 ? 'none' : undefined,
+                      };
+
+                      return (
+                        <div 
+                          key={key} 
+                          className={`cell ${state === 'selected' ? 'selected' : state === 'erased' ? 'erased' : ''} ${isCageResolved ? 'cage-resolved' : ''} ${isWrong ? 'wrong' : ''}`}
+                          style={cellStyle} 
+                          onClick={() => handleCellClick(r, c)}
+                        >
+                          {isTopLeft && (
+                            <span className={`cage-hint ${checkCompletion.cages[cageIndex] ? 'complete' : checkOverflow.cages[cageIndex] ? 'over' : ''}`}>
+                              {cageSums[cageIndex]}
+                            </span>
+                          )}
+                          <span className="number">{value}</span>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="controls">
+              <div className="mode-switch">
+                <button 
+                  className={`mode-btn ${mode === 'select' ? 'active' : ''}`}
+                  onClick={() => setMode('select')}
+                >
+                  <span className="icon">⭕</span>
+                  <span className="label">選択</span>
+                </button>
+                <button 
+                  className={`mode-btn ${mode === 'erase' ? 'active' : ''}`}
+                  onClick={() => setMode('erase')}
+                >
+                  <span className="icon">✕</span>
+                  <span className="label">消去</span>
+                </button>
+              </div>
+              <button className="new-game-btn" onClick={() => startNewGame(difficulty)}>
+                新しいパズル
+              </button>
+            </div>
+
+            <div className="rules">
+              <h3>🎮 遊び方</h3>
+              <ul>
+                <li>正しい数字を選んで（⭕）合計を目標値に合わせる</li>
+                <li>不要な数字は消去でマーク</li>
+                <li>間違えるとライフが減ります（2回でゲームオーバー）</li>
+              </ul>
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<NumberSums />);
+  </script>
+</body>
+</html>
